@@ -79,3 +79,22 @@ add_filter( 'woocommerce_breadcrumb_defaults', function( $defaults ) {
 	$defaults['delimiter'] = ' / ';
 	return $defaults;
 } );
+
+/* --------------------------------------------------
+   WooCommerce: AJAX mini-cart fragments
+   Keeps the mini-cart HTML in sync after add/remove
+-------------------------------------------------- */
+add_filter( 'woocommerce_add_to_cart_fragments', function( $fragments ) {
+	ob_start();
+	woocommerce_mini_cart();
+	$fragments['#mini-cart-body'] = '<div class="mini-cart__body" id="mini-cart-body">' . ob_get_clean() . '</div>';
+	return $fragments;
+} );
+
+/* --------------------------------------------------
+   WooCommerce: custom product card template path
+-------------------------------------------------- */
+add_filter( 'woocommerce_locate_template', function( $template, $template_name, $template_path ) {
+	$custom = get_template_directory() . '/woocommerce/' . $template_name;
+	return file_exists( $custom ) ? $custom : $template;
+}, 10, 3 );
