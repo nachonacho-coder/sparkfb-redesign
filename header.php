@@ -18,12 +18,8 @@
 			<span></span><span></span><span></span>
 		</button>
 
-		<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="site-logo">
-			<?php if ( has_custom_logo() ) : ?>
-				<?php the_custom_logo(); ?>
-			<?php else : ?>
-				SPARK<span>FB</span>
-			<?php endif; ?>
+		<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="site-logo" aria-label="Spark Fingerboards">
+			<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/spark.svg' ); ?>" alt="Spark Fingerboards" height="28">
 		</a>
 
 		<nav class="site-nav" aria-label="Primary">
@@ -75,8 +71,8 @@
 	<div class="nav-drawer__inner">
 
 		<div class="nav-drawer__head">
-			<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="site-logo">
-				SPARK<span>FB</span>
+			<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="site-logo" aria-label="Spark Fingerboards">
+				<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/spark.svg' ); ?>" alt="Spark Fingerboards" height="24">
 			</a>
 			<button class="nav-drawer__close" aria-label="Cerrar menú" id="nav-drawer-close">
 				<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
