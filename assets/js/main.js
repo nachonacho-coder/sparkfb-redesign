@@ -4,6 +4,26 @@
   'use strict';
 
   // -----------------------------------------------
+  // Loader (solo en la primera visita de la sesión)
+  // -----------------------------------------------
+  const loader = document.getElementById('spark-loader');
+  if (loader) {
+    if (sessionStorage.getItem('sparkfb_loaded')) {
+      loader.remove();
+    } else {
+      var startTime = Date.now();
+      window.addEventListener('load', function () {
+        var delay = Math.max(0, 1000 - (Date.now() - startTime));
+        setTimeout(function () {
+          loader.classList.add('done');
+          setTimeout(function () { loader.remove(); }, 500);
+        }, delay);
+      });
+      sessionStorage.setItem('sparkfb_loaded', '1');
+    }
+  }
+
+  // -----------------------------------------------
   // Helpers
   // -----------------------------------------------
   function lockScroll()   { document.body.style.overflow = 'hidden'; }
@@ -65,11 +85,100 @@
   if (miniCartClose) miniCartClose.addEventListener('click', closeCart);
   if (cartBackdrop)  cartBackdrop.addEventListener('click', closeCart);
 
+  // -----------------------------------------------
+  // Location dropdown
+  // -----------------------------------------------
+  const locToggle = document.getElementById('loc-toggle');
+  const locMenu   = document.getElementById('loc-menu');
+
+  if (locToggle && locMenu) {
+    locToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const open = !locMenu.hidden;
+      locMenu.hidden = open;
+      locToggle.setAttribute('aria-expanded', String(!open));
+    });
+  }
+
+  // -----------------------------------------------
+  // Live Search
+  // -----------------------------------------------
+  const searchTrigger  = document.getElementById('search-trigger');
+  const searchDropdown = document.getElementById('search-dropdown');
+  const searchLiveInput = document.getElementById('search-live-input');
+  const searchResults  = document.getElementById('search-results');
+
+  let searchTimer = null;
+
+  function openSearch() {
+    if (!searchDropdown) return;
+    searchDropdown.hidden = false;
+    searchTrigger?.setAttribute('aria-expanded', 'true');
+    setTimeout(() => searchLiveInput?.focus(), 30);
+  }
+
+  function closeSearch() {
+    if (!searchDropdown) return;
+    searchDropdown.hidden = true;
+    searchTrigger?.setAttribute('aria-expanded', 'false');
+    if (searchLiveInput) searchLiveInput.value = '';
+    if (searchResults)   searchResults.innerHTML = '';
+  }
+
+  function renderResults(results) {
+    if (!searchResults) return;
+    if (!results.length) {
+      searchResults.innerHTML = '<p class="search-no-results">Sin resultados</p>';
+      return;
+    }
+    searchResults.innerHTML = results.map(r => `
+      <a href="${r.url}" class="search-result">
+        <img src="${r.img}" alt="${r.name}" class="search-result__img" loading="lazy">
+        <div>
+          <span class="search-result__name">${r.name}</span>
+          <span class="search-result__price">${r.price}</span>
+        </div>
+      </a>
+    `).join('');
+  }
+
+  if (searchLiveInput) {
+    searchLiveInput.addEventListener('input', () => {
+      clearTimeout(searchTimer);
+      const q = searchLiveInput.value.trim();
+      if (q.length < 2) { if (searchResults) searchResults.innerHTML = ''; return; }
+      searchTimer = setTimeout(() => {
+        const url = (window.sparkfbData?.ajaxUrl || '/wp-admin/admin-ajax.php')
+          + '?action=sparkfb_search&q=' + encodeURIComponent(q);
+        fetch(url).then(r => r.json()).then(renderResults).catch(() => {});
+      }, 300);
+    });
+  }
+
+  if (searchTrigger) searchTrigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    searchDropdown?.hidden ? openSearch() : closeSearch();
+  });
+
+  // Click fuera cierra ambos dropdowns
+  document.addEventListener('click', (e) => {
+    if (locMenu && !locMenu.hidden && !locToggle?.contains(e.target)) {
+      locMenu.hidden = true;
+      locToggle?.setAttribute('aria-expanded', 'false');
+    }
+    if (searchDropdown && !searchDropdown.hidden &&
+        !searchTrigger?.contains(e.target) && !searchDropdown.contains(e.target)) {
+      closeSearch();
+    }
+  });
+
   // Close drawers on Escape
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
     closeNav();
     closeCart();
+    closeSearch();
+    if (locMenu) { locMenu.hidden = true; locToggle?.setAttribute('aria-expanded', 'false'); }
   });
 
   // -----------------------------------------------
@@ -87,16 +196,9 @@
   document.body.addEventListener('removed_from_cart', updateCartUI);
 
   function updateCartUI() {
-    const count = parseInt(
-      document.querySelector('.woocommerce-cart-form')?.dataset?.cartCount
-      ?? cartCountBadge?.textContent ?? '0',
-      10
-    );
-
     if (!cartCountBadge) return;
 
-    // WooCommerce updates fragments; just sync the badge from the updated mini-cart total
-    const miniCartQtyEl = document.querySelector('.mini-cart__body .woocommerce-mini-cart-item');
+    // WooCommerce updates fragments; sync badge from updated mini-cart
     const items = document.querySelectorAll('.mini-cart__body .woocommerce-mini-cart-item');
 
     if (items.length > 0) {
@@ -108,25 +210,43 @@
   }
 
   // -----------------------------------------------
-  // Product gallery thumbnail switcher
+  // Product gallery slideshow
   // -----------------------------------------------
-  const mainImg = document.getElementById('sp-main-img');
-  const thumbs  = document.querySelectorAll('.sp-thumb');
+  const galleryMain = document.getElementById('sp-gallery-main');
+  const mainImg     = document.getElementById('sp-main-img');
 
-  thumbs.forEach((thumb) => {
-    thumb.addEventListener('click', () => {
-      if (!mainImg) return;
-      mainImg.style.opacity = '0';
-      setTimeout(() => {
-        mainImg.src = thumb.dataset.full;
-        mainImg.style.opacity = '1';
-      }, 150);
-      thumbs.forEach(t => t.classList.remove('is-active'));
-      thumb.classList.add('is-active');
-    });
-  });
+  if (galleryMain && mainImg) {
+    const imgsAttr = galleryMain.dataset.imgs;
+    const imgs = imgsAttr ? JSON.parse(imgsAttr) : [];
 
-  if (thumbs.length) thumbs[0].classList.add('is-active');
+    if (imgs.length > 1) {
+      let current = 0;
+      let timer;
+
+      function showImg(idx) {
+        current = (idx + imgs.length) % imgs.length;
+        if (!imgs[current]) return;
+        mainImg.style.opacity = '0';
+        setTimeout(function () {
+          mainImg.src = imgs[current];
+          mainImg.style.opacity = '1';
+        }, 150);
+      }
+
+      function startTimer() {
+        clearInterval(timer);
+        timer = setInterval(function () { showImg(current + 1); }, 4000);
+      }
+
+      var prevBtn = galleryMain.querySelector('.sp-gallery-btn--prev');
+      var nextBtn = galleryMain.querySelector('.sp-gallery-btn--next');
+
+      if (prevBtn) prevBtn.addEventListener('click', function () { showImg(current - 1); startTimer(); });
+      if (nextBtn) nextBtn.addEventListener('click', function () { showImg(current + 1); startTimer(); });
+
+      startTimer();
+    }
+  }
 
   // -----------------------------------------------
   // Sticky header elevation on scroll
@@ -143,3 +263,9 @@
   }
 
 })();
+
+function sparkCarousel(id, dir) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.scrollBy({ left: dir * el.offsetWidth, behavior: 'smooth' });
+}

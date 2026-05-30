@@ -26,7 +26,7 @@ if ( empty( $product ) || ! $product->is_visible() ) {
 	<?php if ( $product->is_purchasable() && $product->is_in_stock() && ! $product->is_type( 'variable' ) ) : ?>
 		<?php woocommerce_template_loop_add_to_cart( [ 'class' => 'btn btn-primary product-card__atc' ] ); ?>
 	<?php else : ?>
-		<a href="<?php the_permalink(); ?>" class="btn btn-outline product-card__atc">Ver producto</a>
+		<a href="<?php the_permalink(); ?>" class="btn btn-outline product-card__atc"><?php echo sparkfb_t( 'Ver producto', 'View product' ); ?></a>
 	<?php endif; ?>
 
 </li>

@@ -14,28 +14,25 @@
 
 	<!-- LEFT: gallery -->
 	<div class="sp-gallery">
-		<div class="sp-gallery__main">
+		<div class="sp-gallery__main" id="sp-gallery-main"
+			<?php if ( count( $all_imgs ) > 1 ) : ?>
+			data-imgs="<?php echo esc_attr( wp_json_encode( array_map( fn( $id ) => wp_get_attachment_image_url( $id, 'large' ), $all_imgs ) ) ); ?>"
+			<?php endif; ?>>
 			<img
 				src="<?php echo esc_url( wp_get_attachment_image_url( $main_img_id, 'large' ) ); ?>"
 				alt="<?php the_title_attribute(); ?>"
 				class="sp-main-img"
 				id="sp-main-img"
 			>
+			<?php if ( count( $all_imgs ) > 1 ) : ?>
+			<button class="sp-gallery-btn sp-gallery-btn--prev" aria-label="<?php echo esc_attr( sparkfb_t( 'Anterior', 'Previous' ) ); ?>">
+				<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12 4L6 10L12 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+			</button>
+			<button class="sp-gallery-btn sp-gallery-btn--next" aria-label="<?php echo esc_attr( sparkfb_t( 'Siguiente', 'Next' ) ); ?>">
+				<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M8 4L14 10L8 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+			</button>
+			<?php endif; ?>
 		</div>
-
-		<?php if ( count( $all_imgs ) > 1 ) : ?>
-		<div class="sp-gallery__thumbs">
-			<?php foreach ( $all_imgs as $img_id ) : ?>
-				<button
-					class="sp-thumb"
-					data-full="<?php echo esc_url( wp_get_attachment_image_url( $img_id, 'large' ) ); ?>"
-					aria-label="Ver imagen"
-				>
-					<?php echo wp_get_attachment_image( $img_id, [ 80, 80 ], false, [ 'loading' => 'lazy' ] ); ?>
-				</button>
-			<?php endforeach; ?>
-		</div>
-		<?php endif; ?>
 	</div>
 
 	<!-- RIGHT: info -->
@@ -43,7 +40,7 @@
 
 		<!-- breadcrumb -->
 		<nav class="sp-breadcrumb" aria-label="Breadcrumb">
-			<a href="<?php echo esc_url( home_url() ); ?>">Home</a>
+			<a href="<?php echo esc_url( home_url() ); ?>"><?php echo sparkfb_t( 'Inicio', 'Home' ); ?></a>
 			<span>/</span>
 			<?php foreach ( wc_get_product_category_list( get_the_ID(), '|||' ) ? explode( '|||', wc_get_product_category_list( get_the_ID(), '|||', '', '' ) ) : [] as $cat ) : ?>
 				<span><?php echo wp_kses_post( trim( $cat ) ); ?></span>
@@ -79,8 +76,8 @@
 
 		<!-- shipping note -->
 		<div class="sp-shipping-note">
-			<span>🇵🇪 Lima 2–3 días</span>
-			<span>🌍 Internacional 15–20 días</span>
+			<span>🇵🇪 <?php echo sparkfb_t( 'Lima 2–3 días', 'Lima 2–3 days' ); ?></span>
+			<span>🌍 <?php echo sparkfb_t( 'Internacional 15–20 días', 'International 15–20 days' ); ?></span>
 		</div>
 
 	</div>
@@ -94,17 +91,19 @@ if ( $related ) :
 <section class="section sp-related">
 	<div class="container">
 		<div class="section-header">
-			<span class="section-label">También te puede gustar</span>
+			<span class="section-label"><?php echo sparkfb_t( 'También te puede gustar', 'You might also like' ); ?></span>
 		</div>
-		<div class="product-grid">
+		<ul class="product-grid">
 			<?php
 			foreach ( $related as $rel_id ) :
-				$setup = wc_setup_product_data( $rel_id );
+				$post_object = get_post( $rel_id );
+				setup_postdata( $GLOBALS['post'] = $post_object );
+				wc_setup_product_data( $post_object );
 				wc_get_template_part( 'content', 'product' );
-				wp_reset_postdata();
 			endforeach;
+			wp_reset_postdata();
 			?>
-		</div>
+		</ul>
 	</div>
 </section>
 <?php endif; ?>
