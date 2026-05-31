@@ -49,6 +49,8 @@
 	<!-- MAIN -->
 	<div class="archive-main">
 
+		<?php woocommerce_output_all_notices(); ?>
+
 		<div class="archive-topbar">
 			<h1 class="archive-title"><?php woocommerce_page_title(); ?></h1>
 			<div class="archive-topbar-right">
@@ -69,12 +71,12 @@
 				<a href="<?php the_permalink(); ?>" class="shop-card__img-wrap">
 					<?php echo $product->get_image( 'woocommerce_thumbnail', [ 'class' => 'shop-card__img' ] ); ?>
 					<?php if ( $product->is_on_sale() ) : ?>
-						<span class="shop-card__badge">Sale</span>
+						<span class="shop-card__badge"><?php echo esc_html__( 'Sale', 'woocommerce' ); ?></span>
 					<?php endif; ?>
 				</a>
 				<div class="shop-card__info">
 					<a href="<?php the_permalink(); ?>" class="shop-card__name"><?php the_title(); ?></a>
-					<div class="shop-card__price"><?php echo $product->get_price_html(); ?></div>
+					<div class="shop-card__price"><?php echo wp_kses_post( $product->get_price_html() ); ?></div>
 				</div>
 				<?php if ( $purchasable ) :
 					woocommerce_template_loop_add_to_cart( [ 'class' => 'shop-card__atc' ] );

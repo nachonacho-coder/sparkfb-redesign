@@ -18,7 +18,7 @@ if ( empty( $product ) || ! $product->is_visible() ) {
 
 		<div class="product-card__meta">
 			<h3 class="product-name"><?php the_title(); ?></h3>
-			<div class="product-price"><?php echo $product->get_price_html(); ?></div>
+			<div class="product-price"><?php echo wp_kses_post( $product->get_price_html() ); ?></div>
 		</div>
 
 	</a>
@@ -26,7 +26,7 @@ if ( empty( $product ) || ! $product->is_visible() ) {
 	<?php if ( $product->is_purchasable() && $product->is_in_stock() && ! $product->is_type( 'variable' ) ) : ?>
 		<?php woocommerce_template_loop_add_to_cart( [ 'class' => 'btn btn-primary product-card__atc' ] ); ?>
 	<?php else : ?>
-		<a href="<?php the_permalink(); ?>" class="btn btn-outline product-card__atc"><?php echo sparkfb_t( 'Ver producto', 'View product' ); ?></a>
+		<a href="<?php the_permalink(); ?>" class="btn btn-outline product-card__atc"><?php echo esc_html( sparkfb_t( 'Ver producto', 'View product' ) ); ?></a>
 	<?php endif; ?>
 
 </li>

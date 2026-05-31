@@ -40,7 +40,7 @@
 				<?php endif; ?>
 
 				<span class="sparkfb-mci__qty">
-					<?php echo esc_html( $cart_item['quantity'] ); ?> &times; <?php echo $product_price; ?>
+					<?php echo esc_html( $cart_item['quantity'] ); ?> &times; <?php echo wp_kses_post( $product_price ); ?>
 				</span>
 			</div>
 

@@ -33,17 +33,17 @@
 			</div>
 
 			<div class="footer-col">
-				<h4><?php echo sparkfb_t( 'Ayuda', 'Help' ); ?></h4>
+				<h4><?php echo esc_html( sparkfb_t( 'Ayuda', 'Help' ) ); ?></h4>
 				<ul>
-					<li><a href="/envios"><?php echo sparkfb_t( 'Envíos', 'Shipping' ); ?></a></li>
+					<li><a href="/envios"><?php echo esc_html( sparkfb_t( 'Envíos', 'Shipping' ) ); ?></a></li>
 					<li><a href="/faq">FAQ</a></li>
-					<li><a href="/contacto"><?php echo sparkfb_t( 'Contacto', 'Contact' ); ?></a></li>
+					<li><a href="/contacto"><?php echo esc_html( sparkfb_t( 'Contacto', 'Contact' ) ); ?></a></li>
 					<li><a href="/custom">Custom Orders</a></li>
 				</ul>
 			</div>
 
 			<div class="footer-col">
-				<h4><?php echo sparkfb_t( 'Síguenos', 'Follow us' ); ?></h4>
+				<h4><?php echo esc_html( sparkfb_t( 'Síguenos', 'Follow us' ) ); ?></h4>
 				<ul>
 					<li><a href="https://instagram.com/sparkfb" target="_blank" rel="noopener">Instagram</a></li>
 					<li><a href="https://tiktok.com/@sparkfb" target="_blank" rel="noopener">TikTok</a></li>
@@ -54,7 +54,7 @@
 		</div>
 
 		<div class="footer-bottom">
-			<span>&copy; <?php echo date( 'Y' ); ?> Spark Fingerboards. <?php echo sparkfb_t( 'Todos los derechos reservados.', 'All rights reserved.' ); ?></span>
+			<span>&copy; <?php echo date( 'Y' ); ?> Spark Fingerboards. <?php echo esc_html( sparkfb_t( 'Todos los derechos reservados.', 'All rights reserved.' ) ); ?></span>
 			<span>Lima, Perú</span>
 		</div>
 

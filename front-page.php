@@ -9,7 +9,7 @@
 			<h1 class="hero-title"><em><?php echo esc_html( get_theme_mod( 'sparkfb_hero_title', 'I<3SPARK' ) ); ?></em></h1>
 			<div class="hero-actions">
 				<a href="<?php echo esc_url( get_permalink( wc_get_page_id( 'shop' ) ) ); ?>" class="btn btn-primary">
-					<?php echo sparkfb_t( 'Comprar ahora', 'Shop now' ); ?>
+					<?php echo esc_html( sparkfb_t( 'Comprar ahora', 'Shop now' ) ); ?>
 				</a>
 			</div>
 		</div>
@@ -73,9 +73,9 @@
 	<section class="section" id="featured">
 		<div class="container">
 			<div class="section-header">
-				<span class="section-label"><?php echo sparkfb_t( 'Novedades', 'New arrivals' ); ?></span>
+				<span class="section-label"><?php echo esc_html( sparkfb_t( 'Novedades', 'New arrivals' ) ); ?></span>
 				<a href="<?php echo esc_url( get_permalink( wc_get_page_id( 'shop' ) ) ); ?>" class="btn btn-outline">
-					<?php echo sparkfb_t( 'Ver todo', 'View all' ); ?>
+					<?php echo esc_html( sparkfb_t( 'Ver todo', 'View all' ) ); ?>
 				</a>
 			</div>
 
@@ -103,10 +103,10 @@
 							</div>
 							<div class="pcard__meta">
 								<h3 class="pcard__name"><?php echo esc_html( $fp->get_name() ); ?></h3>
-								<div class="pcard__price"><?php echo $fp->get_price_html(); ?></div>
+								<div class="pcard__price"><?php echo wp_kses_post( $fp->get_price_html() ); ?></div>
 							</div>
 						</a>
-						<a href="<?php echo esc_url( $fp->get_permalink() ); ?>" class="pcard__atc"><?php echo sparkfb_t( 'Ver producto', 'View product' ); ?></a>
+						<a href="<?php echo esc_url( $fp->get_permalink() ); ?>" class="pcard__atc"><?php echo esc_html( sparkfb_t( 'Ver producto', 'View product' ) ); ?></a>
 					</div>
 					<?php endforeach; ?>
 				</div>

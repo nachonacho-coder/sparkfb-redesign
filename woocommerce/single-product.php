@@ -10,6 +10,14 @@
 	$all_imgs    = array_merge( [ $main_img_id ], $images );
 ?>
 
+<?php
+	/**
+	 * Core WC hook — outputs store notices ("added to cart" / errors) and lets
+	 * plugins (PayPal express buttons, etc.) inject markup on the product page.
+	 */
+	do_action( 'woocommerce_before_single_product' );
+?>
+
 <main class="sp-layout">
 
 	<!-- LEFT: gallery -->
@@ -40,7 +48,7 @@
 
 		<!-- breadcrumb -->
 		<nav class="sp-breadcrumb" aria-label="Breadcrumb">
-			<a href="<?php echo esc_url( home_url() ); ?>"><?php echo sparkfb_t( 'Inicio', 'Home' ); ?></a>
+			<a href="<?php echo esc_url( home_url() ); ?>"><?php echo esc_html( sparkfb_t( 'Inicio', 'Home' ) ); ?></a>
 			<span>/</span>
 			<?php foreach ( wc_get_product_category_list( get_the_ID(), '|||' ) ? explode( '|||', wc_get_product_category_list( get_the_ID(), '|||', '', '' ) ) : [] as $cat ) : ?>
 				<span><?php echo wp_kses_post( trim( $cat ) ); ?></span>
@@ -52,7 +60,7 @@
 		<h1 class="sp-title"><?php the_title(); ?></h1>
 
 		<div class="sp-price">
-			<?php echo $product->get_price_html(); ?>
+			<?php echo wp_kses_post( $product->get_price_html() ); ?>
 		</div>
 
 		<?php if ( $product->get_short_description() ) : ?>
@@ -107,6 +115,8 @@ if ( $related ) :
 	</div>
 </section>
 <?php endif; ?>
+
+<?php do_action( 'woocommerce_after_single_product' ); ?>
 
 <?php endwhile; ?>
 

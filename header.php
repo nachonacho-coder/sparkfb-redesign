@@ -43,11 +43,11 @@
 						[ 'slug' => 'wheels',     'es' => 'Wheels',     'en' => 'Wheels' ],
 					];
 					echo '<ul class="main-nav">';
-					echo '<li><a href="' . esc_url( $shop ) . '">' . sparkfb_t( 'Tienda', 'Shop' ) . '</a></li>';
+					echo '<li><a href="' . esc_url( $shop ) . '">' . esc_html( sparkfb_t( 'Tienda', 'Shop' ) ) . '</a></li>';
 					foreach ( $nav_cats as $c ) {
 						$term = get_term_by( 'slug', $c['slug'], 'product_cat' );
 						$url  = ( $term && ! is_wp_error( $term ) ) ? get_term_link( $term ) : '#';
-						echo '<li><a href="' . esc_url( $url ) . '">' . sparkfb_t( $c['es'], $c['en'] ) . '</a></li>';
+						echo '<li><a href="' . esc_url( $url ) . '">' . esc_html( sparkfb_t( $c['es'], $c['en'] ) ) . '</a></li>';
 					}
 					echo '</ul>';
 				},
@@ -139,11 +139,11 @@
 							[ 'slug' => 'trucks',     'es' => 'Trucks',     'en' => 'Trucks' ],
 							[ 'slug' => 'wheels',     'es' => 'Wheels',     'en' => 'Wheels' ],
 						];
-						echo '<li><a href="' . esc_url( $shop ) . '">' . sparkfb_t( 'Tienda', 'Shop' ) . '</a></li>';
+						echo '<li><a href="' . esc_url( $shop ) . '">' . esc_html( sparkfb_t( 'Tienda', 'Shop' ) ) . '</a></li>';
 						foreach ( $nav_cats as $c ) {
 							$term = get_term_by( 'slug', $c['slug'], 'product_cat' );
 							$url  = ( $term && ! is_wp_error( $term ) ) ? get_term_link( $term ) : '#';
-							echo '<li><a href="' . esc_url( $url ) . '">' . sparkfb_t( $c['es'], $c['en'] ) . '</a></li>';
+							echo '<li><a href="' . esc_url( $url ) . '">' . esc_html( sparkfb_t( $c['es'], $c['en'] ) ) . '</a></li>';
 						}
 					},
 				] );
@@ -152,8 +152,8 @@
 		</nav>
 
 		<div class="nav-drawer__footer">
-			<a href="<?php echo esc_url( wc_get_page_permalink( 'myaccount' ) ); ?>"><?php echo sparkfb_t( 'Mi cuenta', 'My account' ); ?></a>
-			<a href="<?php echo esc_url( wc_get_cart_url() ); ?>"><?php echo sparkfb_t( 'Carrito', 'Cart' ); ?></a>
+			<a href="<?php echo esc_url( wc_get_page_permalink( 'myaccount' ) ); ?>"><?php echo esc_html( sparkfb_t( 'Mi cuenta', 'My account' ) ); ?></a>
+			<a href="<?php echo esc_url( wc_get_cart_url() ); ?>"><?php echo esc_html( sparkfb_t( 'Carrito', 'Cart' ) ); ?></a>
 		</div>
 
 	</div>
@@ -167,7 +167,7 @@
 	<div class="mini-cart__inner">
 
 		<div class="mini-cart__head">
-			<h2 class="mini-cart__title"><?php echo sparkfb_t( 'Tu carrito', 'Your cart' ); ?></h2>
+			<h2 class="mini-cart__title"><?php echo esc_html( sparkfb_t( 'Tu carrito', 'Your cart' ) ); ?></h2>
 			<button class="mini-cart__close" id="mini-cart-close" aria-label="<?php echo esc_attr( sparkfb_t( 'Cerrar carrito', 'Close cart' ) ); ?>">
 				<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
 					<line x1="18" y1="6" x2="6" y2="18"/>
