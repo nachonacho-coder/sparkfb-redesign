@@ -49,6 +49,7 @@
 						$url  = ( $term && ! is_wp_error( $term ) ) ? get_term_link( $term ) : '#';
 						echo '<li><a href="' . esc_url( $url ) . '">' . esc_html( sparkfb_t( $c['es'], $c['en'] ) ) . '</a></li>';
 					}
+					echo '<li><a href="' . esc_url( home_url( '/faq/' ) ) . '">FAQ</a></li>';
 					echo '</ul>';
 				},
 			] );
@@ -145,6 +146,7 @@
 							$url  = ( $term && ! is_wp_error( $term ) ) ? get_term_link( $term ) : '#';
 							echo '<li><a href="' . esc_url( $url ) . '">' . esc_html( sparkfb_t( $c['es'], $c['en'] ) ) . '</a></li>';
 						}
+						echo '<li><a href="' . esc_url( home_url( '/faq/' ) ) . '">FAQ</a></li>';
 					},
 				] );
 				?>
