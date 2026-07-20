@@ -42,12 +42,27 @@
 						[ 'slug' => 'trucks',     'es' => 'Trucks',     'en' => 'Trucks' ],
 						[ 'slug' => 'wheels',     'es' => 'Wheels',     'en' => 'Wheels' ],
 					];
+					$cat_tags = sparkfb_nav_cat_tags();
 					echo '<ul class="main-nav">';
 					echo '<li><a href="' . esc_url( $shop ) . '">' . esc_html( sparkfb_t( 'Tienda', 'Shop' ) ) . '</a></li>';
 					foreach ( $nav_cats as $c ) {
 						$term = get_term_by( 'slug', $c['slug'], 'product_cat' );
 						$url  = ( $term && ! is_wp_error( $term ) ) ? get_term_link( $term ) : '#';
-						echo '<li><a href="' . esc_url( $url ) . '">' . esc_html( sparkfb_t( $c['es'], $c['en'] ) ) . '</a></li>';
+						$tags = $cat_tags[ $c['slug'] ] ?? [];
+						if ( $tags ) {
+							echo '<li class="has-submenu">';
+							echo '<a href="' . esc_url( $url ) . '">' . esc_html( sparkfb_t( $c['es'], $c['en'] ) ) . '</a>';
+							echo '<ul class="submenu">';
+							foreach ( $tags as $t ) {
+								$tag_term = get_term_by( 'slug', $t['slug'], 'product_tag' );
+								$tag_url  = ( $tag_term && ! is_wp_error( $tag_term ) ) ? get_term_link( $tag_term ) : '#';
+								echo '<li><a href="' . esc_url( $tag_url ) . '">' . esc_html( sparkfb_t( $t['es'], $t['en'] ) ) . '</a></li>';
+							}
+							echo '</ul>';
+							echo '</li>';
+						} else {
+							echo '<li><a href="' . esc_url( $url ) . '">' . esc_html( sparkfb_t( $c['es'], $c['en'] ) ) . '</a></li>';
+						}
 					}
 					echo '<li><a href="' . esc_url( home_url( '/faq/' ) ) . '">FAQ</a></li>';
 					echo '</ul>';
@@ -140,11 +155,18 @@
 							[ 'slug' => 'trucks',     'es' => 'Trucks',     'en' => 'Trucks' ],
 							[ 'slug' => 'wheels',     'es' => 'Wheels',     'en' => 'Wheels' ],
 						];
+						$cat_tags = sparkfb_nav_cat_tags();
 						echo '<li><a href="' . esc_url( $shop ) . '">' . esc_html( sparkfb_t( 'Tienda', 'Shop' ) ) . '</a></li>';
 						foreach ( $nav_cats as $c ) {
 							$term = get_term_by( 'slug', $c['slug'], 'product_cat' );
 							$url  = ( $term && ! is_wp_error( $term ) ) ? get_term_link( $term ) : '#';
 							echo '<li><a href="' . esc_url( $url ) . '">' . esc_html( sparkfb_t( $c['es'], $c['en'] ) ) . '</a></li>';
+							$tags = $cat_tags[ $c['slug'] ] ?? [];
+							foreach ( $tags as $t ) {
+								$tag_term = get_term_by( 'slug', $t['slug'], 'product_tag' );
+								$tag_url  = ( $tag_term && ! is_wp_error( $tag_term ) ) ? get_term_link( $tag_term ) : '#';
+								echo '<li class="nav-drawer__subitem"><a href="' . esc_url( $tag_url ) . '">' . esc_html( sparkfb_t( $t['es'], $t['en'] ) ) . '</a></li>';
+							}
 						}
 						echo '<li><a href="' . esc_url( home_url( '/faq/' ) ) . '">FAQ</a></li>';
 					},

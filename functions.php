@@ -17,6 +17,30 @@ function sparkfb_t( string $es, string $en ) : string {
 	return sparkfb_get_location() === 'peru' ? $es : $en;
 }
 
+/* Product tags shown as nav submenu per product category (main-nav + mobile drawer) */
+function sparkfb_nav_cat_tags() : array {
+	return [
+		'decks'      => [
+			[ 'slug' => 'rwear',      'es' => 'Real Wear',  'en' => 'Real Wear' ],
+			[ 'slug' => 'split-ply',  'es' => 'Split Ply',  'en' => 'Split Ply' ],
+			[ 'slug' => 'cmp',        'es' => 'Completos',  'en' => 'Completes' ],
+			[ 'slug' => 'serigrafia', 'es' => 'Serigrafía', 'en' => 'Silkscreen' ],
+		],
+		'obstaculos' => [
+			[ 'slug' => 'rpls',     'es' => 'Plástico Reciclado', 'en' => 'Recycled Plastic' ],
+			[ 'slug' => 'concrete', 'es' => 'Concreto',           'en' => 'Concrete' ],
+		],
+		'trucks'     => [
+			[ 'slug' => 'sttrucks', 'es' => 'Standard', 'en' => 'Standard' ],
+			[ 'slug' => 'caramel',  'es' => 'Caramel',  'en' => 'Caramel' ],
+		],
+		'wheels'     => [
+			[ 'slug' => 'standardpu', 'es' => 'Standard', 'en' => 'Standard' ],
+			[ 'slug' => 'caramel',    'es' => 'Caramel',  'en' => 'Caramel' ],
+		],
+	];
+}
+
 /* --------------------------------------------------
    Enqueue styles & fonts
 -------------------------------------------------- */
@@ -172,6 +196,15 @@ add_action( 'customize_register', function( $wp_customize ) {
 		'section'     => 'sparkfb_ticker',
 		'type'        => 'textarea',
 	] );
+} );
+
+/* --------------------------------------------------
+   Search results page — solo productos
+-------------------------------------------------- */
+add_action( 'pre_get_posts', function( $query ) {
+	if ( ! is_admin() && $query->is_main_query() && $query->is_search() ) {
+		$query->set( 'post_type', 'product' );
+	}
 } );
 
 /* --------------------------------------------------

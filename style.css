@@ -3,7 +3,7 @@ Theme Name: Spark Fingerboards
 Theme URI: https://sparkfb.com
 Description: Custom WordPress theme for Spark Fingerboards — clean, modern skate aesthetic.
 Author: Nacho
-Version: 1.0.50
+Version: 1.0.55
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 8.0
@@ -163,6 +163,51 @@ h3 { font-size: clamp(1.25rem, 2vw, 1.75rem); }
 
 .main-nav a:hover {
   color: var(--color-text);
+}
+
+.has-submenu { position: relative; padding-bottom: 0.75rem; margin-bottom: -0.75rem; }
+
+.submenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 0.75rem;
+  list-style: none;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  min-width: 170px;
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(4px);
+  transition: opacity var(--transition), transform var(--transition), visibility var(--transition);
+}
+
+.has-submenu:hover .submenu,
+.has-submenu:focus-within .submenu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.submenu a {
+  display: block;
+  padding: 0.6rem var(--spacing-sm);
+  font-size: 0.75rem;
+  text-transform: none;
+  letter-spacing: normal;
+  color: var(--color-mid);
+  white-space: nowrap;
+}
+
+.submenu a:hover { background: var(--color-surface); color: var(--color-text); }
+
+.nav-drawer__subitem a {
+  padding-left: var(--spacing-lg) !important;
+  font-size: 0.85em;
+  color: var(--color-mid);
 }
 
 .header-actions {
@@ -1350,22 +1395,39 @@ h3 { font-size: clamp(1.25rem, 2vw, 1.75rem); }
   cursor: pointer;
 }
 
-.archive-pagination { margin-top: var(--spacing-lg); display: flex; justify-content: center; }
-.woocommerce-pagination ul { list-style: none; display: flex; gap: var(--spacing-xs); }
-.woocommerce-pagination li a,
-.woocommerce-pagination li span {
-  display: flex;
+/* WooCommerce ships its own pagination CSS (woocommerce.css) with higher
+   selector specificity than plain ".archive-pagination .page-numbers" rules
+   (it nests nav > ul > li > a/span, 4 elements deep). !important is needed
+   here to reliably win over the plugin's defaults regardless of enqueue order. */
+.archive-pagination { margin-top: var(--spacing-lg); display: flex; flex-wrap: wrap; justify-content: center; gap: var(--spacing-xs); }
+.archive-pagination ul.page-numbers { list-style: none; display: flex !important; flex-wrap: wrap; gap: var(--spacing-xs); margin: 0; padding: 0; border: none !important; }
+.archive-pagination li { display: flex; border: none !important; float: none !important; }
+.archive-pagination a.page-numbers,
+.archive-pagination span.page-numbers {
+  display: flex !important;
   align-items: center;
   justify-content: center;
   width: 36px;
   height: 36px;
+  min-width: 36px !important;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  font-size: 0.85rem;
+  font-size: 0.85rem !important;
   transition: all var(--transition);
 }
-.woocommerce-pagination li a:hover { border-color: var(--color-text); }
-.woocommerce-pagination li span.current { background: var(--color-dark); color: #fff; border-color: var(--color-dark); font-weight: 700; }
+.archive-pagination span.page-numbers.dots { border: none; width: auto; }
+.archive-pagination a.page-numbers:hover,
+.archive-pagination a.page-numbers:focus {
+  border-color: var(--color-text);
+  background: transparent !important;
+  color: var(--color-text) !important;
+}
+.archive-pagination span.page-numbers.current {
+  background: var(--color-dark) !important;
+  color: #fff !important;
+  border-color: var(--color-dark);
+  font-weight: 700;
+}
 
 /* =============================================
    LOADER
@@ -1578,6 +1640,24 @@ h3 { font-size: clamp(1.25rem, 2vw, 1.75rem); }
   font-size: 0.875rem;
   color: var(--color-mid);
 }
+
+.search-view-all {
+  display: block;
+  text-align: center;
+  padding: 0.75rem var(--spacing-sm);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text);
+  background: var(--color-surface);
+  text-decoration: none;
+  transition: background var(--transition);
+}
+
+.search-view-all:hover { background: var(--color-accent); }
+
+.archive-layout--search { display: block; }
+
+.archive-main--full { width: 100%; }
 
 /* =============================================
    RESPONSIVE
