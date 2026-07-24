@@ -59,6 +59,26 @@
   if (navClose)    navClose.addEventListener('click', closeNav);
   if (navBackdrop) navBackdrop.addEventListener('click', closeNav);
 
+  // Mobile nav drawer: category accordion (only one submenu open at a time)
+  if (navDrawer) {
+    navDrawer.querySelectorAll('.nav-drawer__cat-toggle').forEach(function (toggle) {
+      toggle.addEventListener('click', function () {
+        var item = toggle.closest('.nav-drawer__cat');
+        var isOpen = item.classList.contains('is-open');
+
+        navDrawer.querySelectorAll('.nav-drawer__cat.is-open').forEach(function (openItem) {
+          if (openItem !== item) {
+            openItem.classList.remove('is-open');
+            openItem.querySelector('.nav-drawer__cat-toggle').setAttribute('aria-expanded', 'false');
+          }
+        });
+
+        item.classList.toggle('is-open', !isOpen);
+        toggle.setAttribute('aria-expanded', String(!isOpen));
+      });
+    });
+  }
+
   // -----------------------------------------------
   // Mini-cart Drawer
   // -----------------------------------------------

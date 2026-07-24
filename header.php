@@ -160,13 +160,25 @@
 						foreach ( $nav_cats as $c ) {
 							$term = get_term_by( 'slug', $c['slug'], 'product_cat' );
 							$url  = ( $term && ! is_wp_error( $term ) ) ? get_term_link( $term ) : '#';
-							echo '<li><a href="' . esc_url( $url ) . '">' . esc_html( sparkfb_t( $c['es'], $c['en'] ) ) . '</a></li>';
 							$tags = $cat_tags[ $c['slug'] ] ?? [];
+							if ( empty( $tags ) ) {
+								echo '<li><a href="' . esc_url( $url ) . '">' . esc_html( sparkfb_t( $c['es'], $c['en'] ) ) . '</a></li>';
+								continue;
+							}
+							echo '<li class="nav-drawer__cat">';
+							echo '<button type="button" class="nav-drawer__cat-toggle" aria-expanded="false">';
+							echo '<span>' . esc_html( sparkfb_t( $c['es'], $c['en'] ) ) . '</span>';
+							echo '<svg class="nav-drawer__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>';
+							echo '</button>';
+							echo '<a class="nav-drawer__cat-link" href="' . esc_url( $url ) . '">' . esc_html( sparkfb_t( 'Ver todo', 'View all' ) ) . '</a>';
+							echo '<ul class="nav-drawer__submenu">';
 							foreach ( $tags as $t ) {
 								$tag_term = get_term_by( 'slug', $t['slug'], 'product_tag' );
 								$tag_url  = ( $tag_term && ! is_wp_error( $tag_term ) ) ? get_term_link( $tag_term ) : '#';
 								echo '<li class="nav-drawer__subitem"><a href="' . esc_url( $tag_url ) . '">' . esc_html( sparkfb_t( $t['es'], $t['en'] ) ) . '</a></li>';
 							}
+							echo '</ul>';
+							echo '</li>';
 						}
 						echo '<li><a href="' . esc_url( home_url( '/faq/' ) ) . '">FAQ</a></li>';
 					},
